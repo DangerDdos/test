@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danflat Attendance - Asrama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>SELAMAT DATANG DI BAM</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="activities.html">Aktivitas</a></li>
+                <li><a href="attendance.html">Peresensi Kegiatan</a></li>
+                <li><a href="contact.html">Keluhan</a></li>
+                <li><a href="index.html#statistics">Statistik</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Rekap Presensi</h2>
+            <div id="loginData">
+                <h3>Keterangan Danflat</h3>
+                <p><strong>Nama:</strong> <span id="displayName"></span></p>
+                <p><strong>NIM:</strong> <span id="displayNim"></span></p>
+                <p><strong>Tanggal:</strong> <span id="displayTgl"></span></p>
+            </div>
+            <button onclick="clearData()">Clear Data</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plat</th>
+                        <th>Jumlah Pleton</th>
+                        <th>Tidak Hadir</th>
+                        <th>Nama Tidak Hadir</th>
+                        <th>Alasan Tidak Hadir</th>
+                        <th>Kamar</th>
+                        <th>Total Hadir</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                    <!-- Rows will be added dynamically -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="totalPleton">0</th>
+                        <th id="totalTidakHadir">0</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th id="totalHadir">0</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Asrama. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Retrieve login data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const nim = urlParams.get('nim');
+        const tgl = urlParams.get('tgl');
+
+        // Display login data
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('displayNim').textContent = nim;
+        document.getElementById('displayTgl').textContent = tgl;
+
+        // Retrieve and display attendance data from local storage
+        function loadAttendanceData() {
+            const tableBody = document.getElementById('attendanceTableBody');
+            let totalPleton = 0;
+            let totalTidakHadir = 0;
+            let totalHadir = 0;
+
+            for (let i = 1; i <= 7; i++) {
+                const plat = `plat${i}`;
+                const data = JSON.parse(localStorage.getItem(plat));
+
+                if (data) {
+                    const hadir = data.jumlahAnggota - data.tidakHadir;
+                    const namaTidakHadir = data.tidakHadirDetails.map(detail => detail.nama).join(", ");
+                    const alasanTidakHadir = data.tidakHadirDetails.map(detail => detail.alasan).join(", ");
+                    const kamar = data.kamar;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${plat}</td>
+                        <td>${data.jumlahAnggota}</td>
+                        <td>${data.tidakHadir}</td>
+                        <td>${namaTidakHadir}</td>
+                        <td>${alasanTidakHadir}</td>
+                        <td>${kamar}</td>
+                        <td>${hadir}</td>
+                    `;
+                    tableBody.appendChild(row);
+
+                    totalPleton += parseInt(data.jumlahAnggota) || 0;
+                    totalTidakHadir += parseInt(data.tidakHadir) || 0;
+                    totalHadir += hadir;
+                }
+            }
+
+            document.getElementById('totalPleton').textContent = totalPleton;
+            document.getElementById('totalTidakHadir').textContent = totalTidakHadir;
+            document.getElementById('totalHadir').textContent = totalHadir;
+        }
+
+        // Clear all data from local storage
+        function clearData() {
+            for (let i = 1; i <= 7; i++) {
+                localStorage.removeItem(`plat${i}`);
+            }
+            location.reload();
+        }
+
+        // Load attendance data on page load
+        loadAttendanceData();
+    </script>
+</body>
+</html>

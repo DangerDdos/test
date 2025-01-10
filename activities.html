@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktivitas - Asrama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>SELAMAT DATANG DI BAM</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="activities.html">Aktivitas</a></li>
+                <li><a href="attendance.html">Peresensi Kegiatan</a></li>
+                <li><a href="contact.html">Keluhan</a></li>
+                <li><a href="index.html#statistics">Statistik</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="apelSection">
+            <h2>PRESENSI DAN REKAP DATA APEL</h2>
+            <p>Anda dapat masuk sebagai danflat untuk melihat 
+                rekap presensi pada kegiatan apel yang berlangsung, 
+                danton dapat menginput jumlah mahasiswa pada form ini,
+                 petugas jaga dapat melihat total hadir dan tidak hadir mahasiswa secara keseluruhan.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Asrama. All rights reserved.</p>
+    </footer>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="role">Who is logging in?</label>
+                    <select id="role" name="role" onchange="showFields()">
+                        <option value="">-- Select Role --</option>
+                        <option value="danflat">Danflat</option>
+                        <option value="danton">Danton</option>
+                        <option value="petugasJaga">Petugas Jaga</option>
+                    </select>
+                </div>
+                <div id="danflatFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="danflatName">Nama:</label>
+                        <input type="text" id="danflatName" name="danflatName">
+                    </div>
+                    <div class="form-group">
+                        <label for="danflatNim">NIM:</label>
+                        <input type="text" id="danflatNim" name="danflatNim">
+                    </div>
+                    <div class="form-group">
+                        <label for="danflatTgl">Tanggal:</label>
+                        <input type="date" id="danflatTgl" name="danflatTgl">
+                    </div>
+                </div>
+                <div id="dantonFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="dantonName">Nama:</label>
+                        <input type="text" id="dantonName" name="dantonName">
+                    </div>
+                    <div class="form-group">
+                        <label for="dantonNim">NIM:</label>
+                        <input type="text" id="dantonNim" name="dantonNim">
+                    </div>
+                    <div class="form-group">
+                        <label for="asalPlat">Asal Plat:</label>
+                        <input type="text" id="asalPlat" name="asalPlat">
+                    </div>
+                    <div class="form-group">
+                        <label for="kamar">Danton:</label>
+                        <input type="text" id="kamar" name="kamar">
+                    </div>
+                </div>
+                <div id="petugasJagaFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="petugasJagaName">Nama:</label>
+                        <input type="text" id="petugasJagaName" name="petugasJagaName">
+                    </div>
+                    <div class="form-group">
+                        <label for="petugasJagaNim">NIM:</label>
+                        <input type="text" id="petugasJagaNim" name="petugasJagaNim">
+                    </div>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the section that opens the modal
+        var section = document.getElementById("apelSection");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the section, open the modal 
+        section.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Show additional fields based on role selection
+        function showFields() {
+            var role = document.getElementById("role").value;
+            var danflatFields = document.getElementById("danflatFields");
+            var dantonFields = document.getElementById("dantonFields");
+            var petugasJagaFields = document.getElementById("petugasJagaFields");
+            if (role === "danflat") {
+                danflatFields.style.display = "block";
+                dantonFields.style.display = "none";
+                petugasJagaFields.style.display = "none";
+            } else if (role === "danton") {
+                danflatFields.style.display = "none";
+                dantonFields.style.display = "block";
+                petugasJagaFields.style.display = "none";
+            } else if (role === "petugasJaga") {
+                danflatFields.style.display = "none";
+                dantonFields.style.display = "none";
+                petugasJagaFields.style.display = "block";
+            } else {
+                danflatFields.style.display = "none";
+                dantonFields.style.display = "none";
+                petugasJagaFields.style.display = "none";
+            }
+        }
+
+        // Handle form submission
+        function handleLogin(event) {
+            event.preventDefault();
+            var role = document.getElementById("role").value;
+            if (role === "danton") {
+                var name = document.getElementById("dantonName").value;
+                var nim = document.getElementById("dantonNim").value;
+                var asalPlat = document.getElementById("asalPlat").value;
+                var kamar = document.getElementById("kamar").value;
+                window.location.href = `danton_attendance.html?name=${name}&nim=${nim}&asalPlat=${asalPlat}&kamar=${kamar}`;
+            } else if (role === "danflat") {
+                var name = document.getElementById("danflatName").value;
+                var nim = document.getElementById("danflatNim").value;
+                var tgl = document.getElementById("danflatTgl").value;
+                window.location.href = `danflat_attendance.html?name=${name}&nim=${nim}&tgl=${tgl}`;
+            } else if (role === "petugasJaga") {
+                var name = document.getElementById("petugasJagaName").value;
+                var nim = document.getElementById("petugasJagaNim").value;
+                window.location.href = `petugas_jaga.html?name=${name}&nim=${nim}`;
+            }
+        }
+    </script>
+</body>
+</html>

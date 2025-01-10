@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petugas Jaga - Asrama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>SELAMAT DATANG DI BAM</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="activities.html">Aktivitas</a></li>
+                <li><a href="attendance.html">Peresensi Kegiatan</a></li>
+                <li><a href="contact.html">Keluhan</a></li>
+                <li><a href="index.html#statistics">Statistik</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Data Petugas Jaga</h2>
+            <div id="loginData">
+                <h3>Keterangan Petugas Jaga</h3>
+                <p><strong>Nama:</strong> <span id="displayName"></span></p>
+                <p><strong>NIM:</strong> <span id="displayNim"></span></p>
+            </div>
+            <div id="rekapData" class="rekap-data">
+                <h3>Rekap Data untuk petugas jaga</h3>
+                <div class="rekap-item">
+                    <p><strong>Jumlah Mahasiswa:</strong> <span id="totalPleton">0</span></p>
+                </div>
+                <div class="rekap-item">
+                    <p><strong>Tidak Hadir:</strong> <span id="totalTidakHadir">0</span></p>
+                </div>
+                <div class="rekap-item">
+                    <p><strong>Total Hadir:</strong> <span id="totalHadir">0</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Asrama. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Retrieve login data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const nim = urlParams.get('nim');
+
+        // Display login data
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('displayNim').textContent = nim;
+
+        // Retrieve and display attendance data from local storage
+        function loadRekapData() {
+            let totalPleton = 0;
+            let totalTidakHadir = 0;
+            let totalHadir = 0;
+
+            for (let i = 1; i <= 7; i++) {
+                const plat = `plat${i}`;
+                const data = JSON.parse(localStorage.getItem(plat));
+
+                if (data) {
+                    totalPleton += parseInt(data.jumlahAnggota) || 0;
+                    totalTidakHadir += parseInt(data.tidakHadir) || 0;
+                }
+            }
+
+            totalHadir = totalPleton - totalTidakHadir;
+
+            document.getElementById('totalPleton').textContent = totalPleton;
+            document.getElementById('totalTidakHadir').textContent = totalTidakHadir;
+            document.getElementById('totalHadir').textContent = totalHadir;
+        }
+
+        // Load rekap data on page load
+        loadRekapData();
+    </script>
+</body>
+</html>

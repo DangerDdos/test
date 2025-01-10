@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danton Attendance - Asrama</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>SELAMAT DATANG DI BAM</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="activities.html">Aktivitas</a></li>
+                <li><a href="attendance.html">Peresensi Kegiatan</a></li>
+                <li><a href="contact.html">Keluhan</a></li>
+                <li><a href="index.html#statistics">Statistik</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Pendataan pleton</h2>
+            <div id="loginData">
+                <h3>Keterangan Danton</h3>
+                <p><strong>Nama:</strong> <span id="displayName"></span></p>
+                <p><strong>NIM:</strong> <span id="displayNim"></span></p>
+                <p><strong>Asal Plat:</strong> <span id="displayAsalPlat"></span></p>
+                <p><strong>Danton:</strong> <span id="displayKamar"></span></p>
+            </div>
+            <form id="attendanceForm">
+                <div class="form-group">
+                    <label for="plat">Plat:</label>
+                    <select id="plat" name="plat">
+                        <option value="plat1">Plat 1</option>
+                        <option value="plat2">Plat 2</option>
+                        <option value="plat3">Plat 3</option>
+                        <option value="plat4">Plat 4</option>
+                        <option value="plat5">Plat 5</option>
+                        <option value="plat6">Plat 6</option>
+                        <option value="plat7">Plat 7</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="kamar">Kamar:</label>
+                    <select id="kamar" name="kamar">
+                        <option value="202">202</option>
+                        <option value="203">203</option>
+                        <option value="204">204</option>
+                        <option value="205">205</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="jumlahAnggota">Jumlah Anggota:</label>
+                    <input type="number" id="jumlahAnggota" name="jumlahAnggota">
+                </div>
+                <div class="form-group">
+                    <label for="tidakHadir">Tidak Hadir:</label>
+                    <input type="number" id="tidakHadir" name="tidakHadir" onchange="generateTidakHadirFields()">
+                </div>
+                <div id="tidakHadirFields"></div>
+                <button type="button" onclick="handleCheck(event)">Cek</button>
+                <div class="form-group" id="totalHadirGroup" style="display: none;">
+                    <label for="totalHadir">Total yang Hadir:</label>
+                    <input type="number" id="totalHadir" name="totalHadir" readonly>
+                </div>
+                <button type="button" id="submitButton" style="display: none;" onclick="handleSubmit(event)">Submit</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Asrama. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Retrieve login data from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const nim = urlParams.get('nim');
+        const asalPlat = urlParams.get('asalPlat');
+        const kamar = urlParams.get('kamar');
+
+        // Display login data
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('displayNim').textContent = nim;
+        document.getElementById('displayAsalPlat').textContent = asalPlat;
+        document.getElementById('displayKamar').textContent = kamar;
+
+        // Generate fields for each person who is not present
+        function generateTidakHadirFields() {
+            const tidakHadir = parseInt(document.getElementById('tidakHadir').value) || 0;
+            const fieldsContainer = document.getElementById('tidakHadirFields');
+            fieldsContainer.innerHTML = '';
+
+            for (let i = 1; i <= tidakHadir; i++) {
+                const fieldSet = document.createElement('fieldset');
+                fieldSet.innerHTML = `
+                    <legend>Person ${i}</legend>
+                    <div class="form-group">
+                        <label for="namaTidakHadir${i}">Nama:</label>
+                        <input type="text" id="namaTidakHadir${i}" name="namaTidakHadir${i}">
+                    </div>
+                    <div class="form-group">
+                        <label for="alasanTidakHadir${i}">Alasan:</label>
+                        <input type="text" id="alasanTidakHadir${i}" name="alasanTidakHadir${i}">
+                    </div>
+                `;
+                fieldsContainer.appendChild(fieldSet);
+            }
+        }
+
+        // Handle check button click
+        function handleCheck(event) {
+            event.preventDefault();
+            const jumlahAnggota = parseInt(document.getElementById('jumlahAnggota').value) || 0;
+            const tidakHadir = parseInt(document.getElementById('tidakHadir').value) || 0;
+            const totalHadir = jumlahAnggota - tidakHadir;
+
+            document.getElementById('totalHadir').value = totalHadir;
+            document.getElementById('totalHadirGroup').style.display = 'block';
+            document.getElementById('submitButton').style.display = 'block';
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            const plat = document.getElementById('plat').value;
+            const kamar = document.getElementById('kamar').value;
+            const jumlahAnggota = parseInt(document.getElementById('jumlahAnggota').value) || 0;
+            const tidakHadir = parseInt(document.getElementById('tidakHadir').value) || 0;
+
+            const tidakHadirDetails = [];
+            for (let i = 1; i <= tidakHadir; i++) {
+                const namaTidakHadir = document.getElementById(`namaTidakHadir${i}`).value;
+                const alasanTidakHadir = document.getElementById(`alasanTidakHadir${i}`).value;
+                tidakHadirDetails.push({ nama: namaTidakHadir, alasan: alasanTidakHadir });
+            }
+
+            const data = {
+                plat,
+                kamar,
+                jumlahAnggota,
+                tidakHadir,
+                tidakHadirDetails
+            };
+
+            // Retrieve existing data from local storage
+            const existingData = JSON.parse(localStorage.getItem(plat)) || { jumlahAnggota: 0, tidakHadir: 0, tidakHadirDetails: [], kamar: "" };
+
+            // Accumulate data
+            existingData.jumlahAnggota += jumlahAnggota;
+            existingData.tidakHadir += tidakHadir;
+            existingData.tidakHadirDetails = existingData.tidakHadirDetails.concat(tidakHadirDetails);
+            existingData.kamar = kamar;
+
+            // Store accumulated data in local storage
+            localStorage.setItem(plat, JSON.stringify(existingData));
+
+            alert('Data has been saved successfully.');
+            clearForm();
+        }
+
+        // Clear form fields
+        function clearForm() {
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('tidakHadirFields').innerHTML = '';
+            document.getElementById('totalHadirGroup').style.display = 'none';
+            document.getElementById('submitButton').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
